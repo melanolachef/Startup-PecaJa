@@ -29,12 +29,10 @@ public class RegisterActivity extends AppCompatActivity {
         btnFinalizarCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Aqui entraria a lógica de validação e salvamento do usuário
-                // Por enquanto, vamos apenas mostrar uma mensagem e voltar para o login
+
 
                 Toast.makeText(RegisterActivity.this, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show();
 
-                // Fecha a tela de cadastro e volta para a anterior (Login)
                 finish();
             }
         });
