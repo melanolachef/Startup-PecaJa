@@ -1,5 +1,7 @@
 package com.example.pecaja;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -19,6 +21,10 @@ public class RetrofitClient {
 
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
             httpClient.addInterceptor(logging);
+
+            httpClient.connectTimeout(60, TimeUnit.SECONDS);
+            httpClient.readTimeout(60, TimeUnit.SECONDS);
+            httpClient.writeTimeout(60, TimeUnit.SECONDS);
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)

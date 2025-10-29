@@ -3,9 +3,10 @@ package com.example.pecaja;
 
 public class LoginResponse {
 
-    String token;
+    String jwt;
 
     public String getToken() {
-        return token;
+        return jwt;
     }
-}
+
+    }

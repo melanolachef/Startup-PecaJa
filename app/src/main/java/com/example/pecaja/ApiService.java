@@ -7,7 +7,7 @@ import retrofit2.http.POST;
 public interface ApiService {
 
 
-    @POST("auth/login")
+    @POST("api/auth/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
 }

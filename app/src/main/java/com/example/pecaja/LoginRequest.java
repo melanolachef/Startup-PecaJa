@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class LoginRequest {
 
-    String email;
+    String username;
 
     @SerializedName("password") // Assumindo que a API espera "password"
     String senha;
 
     public LoginRequest(String email, String senha) {
-        this.email = email;
+        this.username = email;
         this.senha = senha;
     }
 }
