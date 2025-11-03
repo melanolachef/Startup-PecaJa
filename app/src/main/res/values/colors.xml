@@ -6,4 +6,6 @@
     <color name="vermelho_principal">#E62E2D</color>
     <color name="cinza_claro_fundo">#F0F0F0</color>
     <color name="cinza_texto">#4A4A4A</color>
+    <color name="preto">#000000</color>
+
 </resources>
