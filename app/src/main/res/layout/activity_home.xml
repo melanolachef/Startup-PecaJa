@@ -6,49 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/imgIconeHome"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/logo_icon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.4"/>
-
-    <TextView
-        android:id="@+id/tvMensagemHome"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="FALE PARA A NOSSA IA O QUE VOCÊ GOSTARIA DE PEDIR"
-        android:textColor="@color/cinza_texto"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginStart="48dp"
-        android:layout_marginEnd="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgIconeHome" />
-
-    <EditText
-        android:id="@+id/etPedido"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="28dp"
-        android:background="@drawable/edit_text_background"
-        android:hint="Digite seu pedido aqui..."
-        android:padding="12dp"
-        android:textColor="@color/preto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- FAB no canto superior esquerdo -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabCart"
         android:layout_width="wrap_content"
@@ -60,7 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <!-- Botão no canto superior direito -->
     <Button
         android:id="@+id/btnHistorico"
         android:layout_width="wrap_content"
@@ -72,5 +28,42 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerChat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/fabCart"
+        app:layout_constraintBottom_toTopOf="@+id/etPedido"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/etPedido"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="Digite seu pedido aqui..."
+        android:padding="12dp"
+        android:textColor="@color/preto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnSend" />
+
+    <ImageButton
+        android:id="@+id/btnSend"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/vermelho_principal"
+        android:src="@drawable/baseline_send_24"
+        app:tint="@color/white"
+        android:background="@drawable/send_button_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
