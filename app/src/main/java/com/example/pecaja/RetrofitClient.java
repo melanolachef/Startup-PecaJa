@@ -9,29 +9,46 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
+    private static final String JAVA_BASE_URL = "https://prj-startup-java.onrender.com/";
 
-    private static final String BASE_URL = "https://prj-startup-java.onrender.com/";
-    private static Retrofit retrofit = null;
+    private static final String CHAT_BASE_URL = "https://chat-bot-vanguard.onrender.com/";
 
-    public static ApiService getApiService() {
-        if (retrofit == null) {
+    private static Retrofit retrofitJava = null;
+    private static Retrofit retrofitChat = null;
 
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    private static OkHttpClient buildHttpClient() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-            httpClient.addInterceptor(logging);
+        return new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
+    }
 
-            httpClient.connectTimeout(60, TimeUnit.SECONDS);
-            httpClient.readTimeout(60, TimeUnit.SECONDS);
-            httpClient.writeTimeout(60, TimeUnit.SECONDS);
 
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+    public static AuthService getAuthService() {
+        if (retrofitJava == null) {
+            retrofitJava = new Retrofit.Builder()
+                    .baseUrl(JAVA_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(httpClient.build())
+                    .client(buildHttpClient())
                     .build();
         }
-        return retrofit.create(ApiService.class);
+        return retrofitJava.create(AuthService.class);
+    }
+
+
+    public static ChatService getChatService() {
+        if (retrofitChat == null) {
+            retrofitChat = new Retrofit.Builder()
+                    .baseUrl(CHAT_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(buildHttpClient())
+                    .build();
+        }
+        return retrofitChat.create(ChatService.class);
     }
 }

@@ -1,24 +1,24 @@
 package com.example.pecaja;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log; // Importe o Log
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import retrofit2.Call; // Importe
-import retrofit2.Callback; // Importe
-import retrofit2.Response; // Importe
+import androidx.appcompat.app.AppCompatActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     EditText etEmail, etSenha;
     Button btnCadastrar, btnEntrar;
-    private ApiService apiService;
+    private AuthService authService;
     private SessionManager sessionManager;
 
     @Override
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         btnCadastrar = findViewById(R.id.btnCadastrar);
         btnEntrar = findViewById(R.id.btnEntrar);
 
-        apiService = RetrofitClient.getApiService();
+        authService = RetrofitClient.getAuthService();
         sessionManager = new SessionManager(this);
 
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         LoginRequest request = new LoginRequest(email, senha);
 
 
-        apiService.login(request).enqueue(new Callback<LoginResponse>() {
+        authService.login(request).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
