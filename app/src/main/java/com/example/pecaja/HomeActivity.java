@@ -21,7 +21,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements MessageAdapter.OnProductClickListener {
 
     FloatingActionButton fabCart;
     Button btnHistorico;
@@ -49,7 +49,9 @@ public class HomeActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         messageList = new ArrayList<>();
-        adapter = new MessageAdapter(messageList);
+
+        adapter = new MessageAdapter(messageList, this);
+
         recyclerChat.setLayoutManager(new LinearLayoutManager(this));
         recyclerChat.setAdapter(adapter);
 
@@ -120,5 +122,10 @@ public class HomeActivity extends AppCompatActivity {
         messageList.add(new Message(produto));
         adapter.notifyItemInserted(messageList.size() - 1);
         recyclerChat.scrollToPosition(messageList.size() - 1);
+    }
+
+    @Override
+    public void onAddToCartClick(Produto produto) {
+        Toast.makeText(this, "Adicionado: " + produto.getNome(), Toast.LENGTH_SHORT).show();
     }
 }
