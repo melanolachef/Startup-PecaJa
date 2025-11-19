@@ -167,12 +167,33 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Cadastro OK! Entrando...", Toast.LENGTH_SHORT).show();
                     realizarLoginAutomatico(email, senha);
                 } else {
+                    // ====================================================
+                    // TRATAMENTO DE ERRO OBJETIVO
+                    // ====================================================
                     try {
-                        String erroMensagem = response.errorBody().string();
-                        Log.e("CadastroErro", "Erro: " + erroMensagem);
-                        Toast.makeText(RegisterActivity.this, "Erro: " + erroMensagem, Toast.LENGTH_LONG).show();
+                        // 1. Pega o texto bruto do erro (JSON)
+                        String erroBruto = response.errorBody().string();
+
+                        org.json.JSONObject jsonObject = new org.json.JSONObject(erroBruto);
+
+                        String mensagemAmigavel;
+
+                        if (jsonObject.has("message")) {
+                            mensagemAmigavel = jsonObject.getString("message");
+                        } else if (jsonObject.has("error")) {
+                            mensagemAmigavel = jsonObject.getString("error");
+                        } else {
+                            // Se não tiver mensagem específica, usa o JSON bruto ou o código
+                            mensagemAmigavel = "Erro no servidor (" + response.code() + ")";
+                        }
+
+                        Toast.makeText(RegisterActivity.this, mensagemAmigavel, Toast.LENGTH_LONG).show();
+
+                        Log.e("CadastroErro", "JSON Completo: " + erroBruto);
+
                     } catch (Exception e) {
-                        Toast.makeText(RegisterActivity.this, "Erro ao cadastrar.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Ocorreu um erro desconhecido. Tente novamente.", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
                 }
             }
