@@ -4,30 +4,101 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private List<Produto> listaProdutos;
+    private Context context;
+    private CartListener listener;
 
-    public CartAdapter(List<Produto> listaProdutos) {
+    public interface CartListener {
+        void onCartUpdated();
+    }
+
+    public CartAdapter(List<Produto> listaProdutos, CartListener listener) {
         this.listaProdutos = listaProdutos;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_produto_carrinho, parent, false);
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.item_produto_carrinho, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Produto produto = listaProdutos.get(position);
+
+        // Preenche os dados visuais
         holder.tvNomeProduto.setText(produto.getNome());
+        holder.tvQuantidade.setText(String.valueOf(produto.getQuantidade()));
+
+        double totalItem = produto.getPreco() * produto.getQuantidade();
+        Locale ptBr = new Locale("pt", "BR");
+        String precoFormatado = NumberFormat.getCurrencyInstance(ptBr).format(totalItem);
+        holder.tvPrecoProduto.setText(precoFormatado);
+
+        Glide.with(context)
+                .load(produto.getUrlFoto())
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(holder.ivProdutoCarrinho);
+
+        // --- LÓGICA DO BOTÃO MAIS ---
+        holder.btnMais.setOnClickListener(v -> {
+            if (produto.getQuantidade() < produto.getEstoqueMaximo()) {
+                produto.incrementarQuantidade();
+                notifyItemChanged(holder.getAdapterPosition());
+                listener.onCartUpdated();
+            } else {
+                // Feedback visual ou Toast (precisaria passar contexto para Toast, mas aqui só bloquear já serve)
+               Toast.makeText(context, "Máximo em estoque", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // --- LÓGICA DO BOTÃO MENOS (ATUALIZADA) ---
+        holder.btnMenos.setOnClickListener(v -> {
+            int currentPosition = holder.getAdapterPosition();
+
+            // Verificação de segurança
+            if (currentPosition == RecyclerView.NO_POSITION) return;
+
+            if (produto.getQuantidade() > 1) {
+                // Se tiver mais de 1, apenas diminui
+                produto.decrementarQuantidade();
+                notifyItemChanged(currentPosition);
+            } else {
+                // SE FOR 1, REMOVE O ITEM
+
+                // 1. Remove do Singleton (Dados)
+                CartManager.getInstance().removerProduto(produto);
+
+                // 2. Remove visualmente da lista (Animação)
+                notifyItemRemoved(currentPosition);
+
+                // 3. Avisa o adapter que os itens abaixo subiram uma posição
+                // (Isso evita bugs de clicar no item errado depois de apagar um)
+                notifyItemRangeChanged(currentPosition, listaProdutos.size());
+            }
+
+            // Atualiza o preço total na Activity
+            listener.onCartUpdated();
+        });
     }
 
     @Override
@@ -36,11 +107,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNomeProduto;
+        TextView tvNomeProduto, tvPrecoProduto, tvQuantidade;
+        ImageView ivProdutoCarrinho;
+        ImageButton btnMais, btnMenos;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNomeProduto = itemView.findViewById(R.id.tvNomeProduto);
+            tvPrecoProduto = itemView.findViewById(R.id.tvPrecoProduto);
+            ivProdutoCarrinho = itemView.findViewById(R.id.ivProdutoCarrinho);
+            tvQuantidade = itemView.findViewById(R.id.tvQuantidade);
+            btnMais = itemView.findViewById(R.id.btnMais);
+            btnMenos = itemView.findViewById(R.id.btnMenos);
         }
     }
 }

@@ -126,6 +126,14 @@ public class HomeActivity extends AppCompatActivity implements MessageAdapter.On
 
     @Override
     public void onAddToCartClick(Produto produto) {
-        Toast.makeText(this, "Adicionado: " + produto.getNome(), Toast.LENGTH_SHORT).show();
+        // Tenta adicionar
+        boolean sucesso = CartManager.getInstance().adicionarProduto(produto);
+
+        if (sucesso) {
+            Toast.makeText(this, produto.getNome() + " adicionado!", Toast.LENGTH_SHORT).show();
+        } else {
+            // Mensagem de erro se estourar o estoque
+            Toast.makeText(this, "Estoque limite atingido para este item!", Toast.LENGTH_LONG).show();
+        }
     }
 }

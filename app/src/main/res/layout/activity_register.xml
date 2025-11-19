@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="32dp"
         tools:context=".RegisterActivity">
 
         <ImageView
@@ -29,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="CADASTRO"
-            android:textColor="@color/cinza_texto"
+            android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,6 +48,8 @@
             android:hint="Nome Completo"
             android:inputType="textPersonName"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvCadastroTitle" />
@@ -60,6 +63,8 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etNome"
             app:layout_constraintStart_toStartOf="@id/etNome"
             app:layout_constraintTop_toBottomOf="@id/etNome" />
@@ -73,6 +78,8 @@
             android:hint="Senha"
             android:inputType="textPassword"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etEmailCadastro"
             app:layout_constraintStart_toStartOf="@id/etEmailCadastro"
             app:layout_constraintTop_toBottomOf="@id/etEmailCadastro" />
@@ -86,6 +93,8 @@
             android:hint="Confirmar Senha"
             android:inputType="textPassword"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etSenhaCadastro"
             app:layout_constraintStart_toStartOf="@id/etSenhaCadastro"
             app:layout_constraintTop_toBottomOf="@id/etSenhaCadastro" />
@@ -99,6 +108,8 @@
             android:hint="Telefone"
             android:inputType="phone"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etConfirmarSenha"
             app:layout_constraintStart_toStartOf="@id/etConfirmarSenha"
             app:layout_constraintTop_toBottomOf="@id/etConfirmarSenha" />
@@ -112,6 +123,8 @@
             android:hint="Documento (CPF/CNPJ)"
             android:inputType="number"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etTelefone"
             app:layout_constraintStart_toStartOf="@id/etTelefone"
             app:layout_constraintTop_toBottomOf="@id/etTelefone" />
@@ -123,7 +136,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="4dp"
             android:text="Tipo de Pessoa:"
-            android:textColor="@color/cinza_texto"
+            android:textColor="@android:color/black"
             app:layout_constraintStart_toStartOf="@id/etDocumento"
             app:layout_constraintTop_toBottomOf="@id/etDocumento" />
 
@@ -142,15 +155,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Física"
-                android:checked="true" />
+                android:checked="true"
+                android:textColor="@android:color/black"
+                android:buttonTint="@color/vermelho_principal"/>
 
             <RadioButton
                 android:id="@+id/rbJuridica"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Jurídica" />
+                android:text="Jurídica"
+                android:textColor="@android:color/black"
+                android:buttonTint="@color/vermelho_principal"/>
         </RadioGroup>
+
 
         <EditText
             android:id="@+id/etCep"
@@ -162,6 +180,8 @@
             android:inputType="number"
             android:maxLength="8"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/rgTipoPessoa"
             app:layout_constraintStart_toStartOf="@id/rgTipoPessoa"
             app:layout_constraintTop_toBottomOf="@id/rgTipoPessoa" />
@@ -175,6 +195,8 @@
             android:hint="Rua"
             android:inputType="textPostalAddress"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etCep"
             app:layout_constraintStart_toStartOf="@id/etCep"
             app:layout_constraintTop_toBottomOf="@id/etCep" />
@@ -188,6 +210,8 @@
             android:hint="Número"
             android:inputType="text"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etRua"
             app:layout_constraintStart_toStartOf="@id/etRua"
             app:layout_constraintTop_toBottomOf="@id/etRua" />
@@ -201,6 +225,8 @@
             android:hint="Complemento"
             android:inputType="text"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etNumero"
             app:layout_constraintStart_toStartOf="@id/etNumero"
             app:layout_constraintTop_toBottomOf="@id/etNumero" />
@@ -214,6 +240,8 @@
             android:hint="Bairro"
             android:inputType="text"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etComplemento"
             app:layout_constraintStart_toStartOf="@id/etComplemento"
             app:layout_constraintTop_toBottomOf="@id/etComplemento" />
@@ -227,6 +255,8 @@
             android:hint="Cidade"
             android:inputType="text"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etBairro"
             app:layout_constraintStart_toStartOf="@id/etBairro"
             app:layout_constraintTop_toBottomOf="@id/etBairro" />
@@ -241,6 +271,8 @@
             android:inputType="textCapCharacters"
             android:maxLength="2"
             android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="@id/etCidade"
             app:layout_constraintStart_toStartOf="@id/etCidade"
             app:layout_constraintTop_toBottomOf="@id/etCidade" />

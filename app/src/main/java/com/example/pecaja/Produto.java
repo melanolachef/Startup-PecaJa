@@ -20,6 +20,11 @@ public class Produto {
     @SerializedName("urlFoto")
     private String urlFoto;
 
+    @SerializedName("quantidadeEstoque")
+    private int estoqueMaximo;
+
+    private int quantidade = 1;
+
 
     public Produto(String nome) {
         this.nome = nome;
@@ -44,5 +49,27 @@ public class Produto {
 
     public String getUrlFoto() {
         return urlFoto;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public void incrementarQuantidade() {
+        this.quantidade++;
+    }
+
+    public int getEstoqueMaximo() {
+        return estoqueMaximo;
+    }
+
+    public void decrementarQuantidade() {
+        if (this.quantidade > 0) {
+            this.quantidade--;
+        }
     }
 }
