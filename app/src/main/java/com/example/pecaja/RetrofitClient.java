@@ -12,9 +12,11 @@ public class RetrofitClient {
     private static final String JAVA_BASE_URL = "https://prj-startup-java.onrender.com/";
 
     private static final String CHAT_BASE_URL = "https://chat-bot-vanguard.onrender.com/";
+    private static final String VIA_CEP_URL = "https://viacep.com.br/ws/";
 
     private static Retrofit retrofitJava = null;
     private static Retrofit retrofitChat = null;
+    private static Retrofit retrofitViaCep = null;
 
     private static OkHttpClient buildHttpClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -50,5 +52,16 @@ public class RetrofitClient {
                     .build();
         }
         return retrofitChat.create(ChatService.class);
+    }
+
+    public static ViaCepService getViaCepService() {
+        if (retrofitViaCep == null) {
+            retrofitViaCep = new Retrofit.Builder()
+                    .baseUrl(VIA_CEP_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(buildHttpClient()) // Usa o mesmo cliente
+                    .build();
+        }
+        return retrofitViaCep.create(ViaCepService.class);
     }
 }

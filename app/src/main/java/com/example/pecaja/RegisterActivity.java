@@ -2,12 +2,16 @@ package com.example.pecaja;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent; // Importante para mudar de tela
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher; // Importante
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton; // Importante
+import android.widget.RadioGroup; // Importante
 import android.widget.Toast;
 
 import retrofit2.Call;
@@ -17,7 +21,11 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity {
 
     // Campos Pessoais
-    EditText etNome, etEmail, etSenha, etConfirmarSenha, etTelefone, etDocumento, etTipoPessoa;
+    EditText etNome, etEmail, etSenha, etConfirmarSenha, etTelefone, etDocumento;
+
+    // Trocamos EditText por RadioGroup
+    RadioGroup rgTipoPessoa;
+    RadioButton rbFisica, rbJuridica;
 
     // Campos de Endereço
     EditText etRua, etNumero, etComplemento, etBairro, etCidade, etEstado, etCep;
@@ -25,7 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnFinalizarCadastro;
 
     private AuthService authService;
-    private SessionManager sessionManager; // NOVO: Precisamos disso para salvar o token
+    private ViaCepService viaCepService; // NOVO SERVIÇO
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,29 +42,28 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         authService = RetrofitClient.getAuthService();
-        sessionManager = new SessionManager(this); // NOVO: Inicializa a sessão
+        viaCepService = RetrofitClient.getViaCepService(); // Inicializa ViaCEP
+        sessionManager = new SessionManager(this);
 
         inicializarComponentes();
+        configurarBuscaCep(); // Configura o listener do CEP
 
-        btnFinalizarCadastro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                realizarCadastro();
-            }
-        });
+        btnFinalizarCadastro.setOnClickListener(v -> realizarCadastro());
     }
 
     private void inicializarComponentes() {
-        // Pessoais
         etNome = findViewById(R.id.etNome);
         etEmail = findViewById(R.id.etEmailCadastro);
         etSenha = findViewById(R.id.etSenhaCadastro);
         etConfirmarSenha = findViewById(R.id.etConfirmarSenha);
         etTelefone = findViewById(R.id.etTelefone);
         etDocumento = findViewById(R.id.etDocumento);
-        etTipoPessoa = findViewById(R.id.etTipoPessoa);
 
-        // Endereço
+        // Inicializar RadioGroup
+        rgTipoPessoa = findViewById(R.id.rgTipoPessoa);
+        rbFisica = findViewById(R.id.rbFisica);
+        rbJuridica = findViewById(R.id.rbJuridica);
+
         etRua = findViewById(R.id.etRua);
         etNumero = findViewById(R.id.etNumero);
         etComplemento = findViewById(R.id.etComplemento);
@@ -67,6 +75,54 @@ public class RegisterActivity extends AppCompatActivity {
         btnFinalizarCadastro = findViewById(R.id.btnFinalizarCadastro);
     }
 
+    // Lógica para buscar CEP automaticamente
+    private void configurarBuscaCep() {
+        etCep.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Quando o usuário digitar 8 números
+                if (s.length() == 8) {
+                    buscarEndereco(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private void buscarEndereco(String cep) {
+        Toast.makeText(this, "Buscando CEP...", Toast.LENGTH_SHORT).show();
+
+        viaCepService.buscarEndereco(cep).enqueue(new Callback<ViaCepResponse>() {
+            @Override
+            public void onResponse(Call<ViaCepResponse> call, Response<ViaCepResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ViaCepResponse endereco = response.body();
+
+                    // Preenche os campos automaticamente
+                    etRua.setText(endereco.getLogradouro());
+                    etBairro.setText(endereco.getBairro());
+                    etCidade.setText(endereco.getLocalidade());
+                    etEstado.setText(endereco.getUf());
+
+                    // Move o foco para o campo Número, para facilitar pro usuário
+                    etNumero.requestFocus();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "CEP não encontrado.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ViaCepResponse> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "Erro ao buscar CEP.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void realizarCadastro() {
         String email = etEmail.getText().toString().trim();
         String senha = etSenha.getText().toString().trim();
@@ -75,6 +131,13 @@ public class RegisterActivity extends AppCompatActivity {
         if (!senha.equals(confirmar)) {
             Toast.makeText(this, "As senhas não conferem!", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        // 1. Pega o valor do RadioButton selecionado
+        String tipoPessoaSelecionada = "Fisica"; // Valor padrão
+        int selectedId = rgTipoPessoa.getCheckedRadioButtonId();
+        if (selectedId == R.id.rbJuridica) {
+            tipoPessoaSelecionada = "Juridica";
         }
 
         Endereco endereco = new Endereco(
@@ -93,28 +156,23 @@ public class RegisterActivity extends AppCompatActivity {
                 senha,
                 etTelefone.getText().toString(),
                 etDocumento.getText().toString(),
-                etTipoPessoa.getText().toString(),
+                tipoPessoaSelecionada, // Passa o valor selecionado
                 endereco
         );
 
-        // 1. TENTA CADASTRAR
         authService.cadastrar(request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, "Cadastro OK! Entrando...", Toast.LENGTH_SHORT).show();
-
-                    // 2. SE DEU CERTO, JÁ FAZ O LOGIN AUTOMATICAMENTE
                     realizarLoginAutomatico(email, senha);
-
                 } else {
-                    // Tratamento de erro melhorado (do passo anterior)
                     try {
                         String erroMensagem = response.errorBody().string();
                         Log.e("CadastroErro", "Erro: " + erroMensagem);
                         Toast.makeText(RegisterActivity.this, "Erro: " + erroMensagem, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(RegisterActivity.this, "Erro desconhecido ao cadastrar.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Erro ao cadastrar.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -126,7 +184,6 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    // NOVO MÉTODO: Faz o login nos bastidores
     private void realizarLoginAutomatico(String email, String senha) {
         LoginRequest loginRequest = new LoginRequest(email, senha);
 
@@ -134,29 +191,20 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
-                    // 3. PEGA O TOKEN
-                    String token = response.body().getToken();
-
-                    // 4. SALVA NA SESSÃO
-                    sessionManager.saveAuthToken(token);
-
-                    // 5. VAI PARA A HOME
+                    sessionManager.saveAuthToken(response.body().getToken());
                     Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
-                    // Estas flags limpam o histórico para o usuário não voltar ao cadastro ao clicar em "Voltar"
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
-
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Cadastro feito, mas falha no login automático.", Toast.LENGTH_LONG).show();
-                    finish(); // Volta para a tela de login manual
+                    Toast.makeText(RegisterActivity.this, "Falha no login automático.", Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(RegisterActivity.this, "Erro de rede no login automático.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Erro de rede no login.", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

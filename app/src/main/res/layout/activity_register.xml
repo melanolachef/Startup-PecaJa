@@ -116,18 +116,41 @@
             app:layout_constraintStart_toStartOf="@id/etTelefone"
             app:layout_constraintTop_toBottomOf="@id/etTelefone" />
 
-        <EditText
-            android:id="@+id/etTipoPessoa"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+        <TextView
+            android:id="@+id/tvLabelTipoPessoa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/edit_text_background"
-            android:hint="Tipo Pessoa (Fisica/Juridica)"
-            android:inputType="text"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="@id/etDocumento"
+            android:layout_marginStart="4dp"
+            android:text="Tipo de Pessoa:"
+            android:textColor="@color/cinza_texto"
             app:layout_constraintStart_toStartOf="@id/etDocumento"
             app:layout_constraintTop_toBottomOf="@id/etDocumento" />
+
+        <RadioGroup
+            android:id="@+id/rgTipoPessoa"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="@id/etDocumento"
+            app:layout_constraintStart_toStartOf="@id/etDocumento"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelTipoPessoa">
+
+            <RadioButton
+                android:id="@+id/rbFisica"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Física"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rbJuridica"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Jurídica" />
+        </RadioGroup>
 
         <EditText
             android:id="@+id/etCep"
@@ -135,12 +158,13 @@
             android:layout_height="50dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/edit_text_background"
-            android:hint="CEP"
+            android:hint="CEP (somente números)"
             android:inputType="number"
+            android:maxLength="8"
             android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="@id/etTipoPessoa"
-            app:layout_constraintStart_toStartOf="@id/etTipoPessoa"
-            app:layout_constraintTop_toBottomOf="@id/etTipoPessoa" />
+            app:layout_constraintEnd_toEndOf="@id/rgTipoPessoa"
+            app:layout_constraintStart_toStartOf="@id/rgTipoPessoa"
+            app:layout_constraintTop_toBottomOf="@id/rgTipoPessoa" />
 
         <EditText
             android:id="@+id/etRua"
