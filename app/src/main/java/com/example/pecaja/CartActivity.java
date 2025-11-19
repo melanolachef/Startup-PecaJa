@@ -13,7 +13,6 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-// Implementa a interface do Adapter
 public class CartActivity extends AppCompatActivity implements CartAdapter.CartListener {
 
     RecyclerView rvProdutos;
@@ -33,7 +32,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartL
 
         listaDeProdutos = CartManager.getInstance().getProdutos();
 
-        // Passa "this" como listener
         cartAdapter = new CartAdapter(listaDeProdutos, this);
 
         rvProdutos.setLayoutManager(new LinearLayoutManager(this));
@@ -45,20 +43,16 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartL
             if(listaDeProdutos.isEmpty()) {
                 Toast.makeText(this, "Seu carrinho está vazio!", Toast.LENGTH_SHORT).show();
             } else {
-                // 1. Adicionar itens ao Histórico
+
                 HistoryManager.getInstance().adicionarCompra(listaDeProdutos);
 
-                // 2. Limpar o Carrinho
                 CartManager.getInstance().limparCarrinho();
 
-                // 3. Feedback e Navegação
                 Toast.makeText(this, "Compra realizada com sucesso!", Toast.LENGTH_LONG).show();
 
-                // Atualiza a tela (lista fica vazia e total zero)
                 cartAdapter.notifyDataSetChanged();
                 atualizarTotal();
 
-                // Opcional: Fechar a tela e voltar pra home
                 finish();
             }
         });

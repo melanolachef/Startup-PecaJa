@@ -19,27 +19,24 @@ public class CartManager {
         return instance;
     }
 
-    // MUDANÇA AQUI: Agora retorna boolean
     public boolean adicionarProduto(Produto novoProduto) {
         for (Produto p : produtosDoCarrinho) {
             if (p.getId() == novoProduto.getId()) {
-                // Verifica se aumentar 1 vai estourar o estoque
                 if (p.getQuantidade() < p.getEstoqueMaximo()) {
                     p.incrementarQuantidade();
-                    return true; // Sucesso
+                    return true;
                 } else {
-                    return false; // Estoque cheio
+                    return false;
                 }
             }
         }
 
-        // Se é um produto novo, verifica se tem pelo menos 1 no estoque
         if (novoProduto.getEstoqueMaximo() > 0) {
             novoProduto.setQuantidade(1);
             produtosDoCarrinho.add(novoProduto);
             return true;
         } else {
-            return false; // Produto sem estoque nenhum
+            return false;
         }
     }
 
@@ -47,12 +44,10 @@ public class CartManager {
         produtosDoCarrinho.remove(produto);
     }
 
-    // Pegar a lista
     public List<Produto> getProdutos() {
         return produtosDoCarrinho;
     }
 
-    // Calcular o total
     public double getValorTotal() {
         double total = 0.0;
         for (Produto p : produtosDoCarrinho) {
@@ -61,7 +56,6 @@ public class CartManager {
         return total;
     }
 
-    // Limpar carrinho (útil para depois de finalizar compra)
     public void limparCarrinho() {
         produtosDoCarrinho.clear();
     }

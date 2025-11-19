@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fazerLogin(String email, String senha) {
-        // 1. Criar o objeto de requisição
         LoginRequest request = new LoginRequest(email, senha);
 
 
@@ -73,27 +72,23 @@ public class MainActivity extends AppCompatActivity {
 
                     String token = response.body().getToken();
 
-                    // Salva o token na sessão
                     sessionManager.saveAuthToken(token);
 
                     Toast.makeText(MainActivity.this, "Login com sucesso!", Toast.LENGTH_SHORT).show();
 
-                    //
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
-                    // Erro de login (email/senha errados, HTTP 401, 403, etc.)
+
                     Toast.makeText(MainActivity.this, "Email ou senha inválidos.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                // 3.B. Erro de rede (sem internet, servidor fora, URL errada)
                 Toast.makeText(MainActivity.this, "Falha na conexão: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 Log.e("LoginError", "Erro: " + t.getMessage());
-                // Lembrete: Se demorar, pode ser o servidor do Render "acordando"
             }
         });
     }

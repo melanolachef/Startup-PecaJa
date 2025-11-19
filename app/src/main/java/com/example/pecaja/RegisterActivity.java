@@ -20,20 +20,17 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // Campos Pessoais
     EditText etNome, etEmail, etSenha, etConfirmarSenha, etTelefone, etDocumento;
 
-    // Trocamos EditText por RadioGroup
     RadioGroup rgTipoPessoa;
     RadioButton rbFisica, rbJuridica;
 
-    // Campos de Endereço
     EditText etRua, etNumero, etComplemento, etBairro, etCidade, etEstado, etCep;
 
     Button btnFinalizarCadastro;
 
     private AuthService authService;
-    private ViaCepService viaCepService; // NOVO SERVIÇO
+    private ViaCepService viaCepService;
     private SessionManager sessionManager;
 
     @Override
@@ -42,11 +39,11 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         authService = RetrofitClient.getAuthService();
-        viaCepService = RetrofitClient.getViaCepService(); // Inicializa ViaCEP
+        viaCepService = RetrofitClient.getViaCepService();
         sessionManager = new SessionManager(this);
 
         inicializarComponentes();
-        configurarBuscaCep(); // Configura o listener do CEP
+        configurarBuscaCep();
 
         btnFinalizarCadastro.setOnClickListener(v -> realizarCadastro());
     }
@@ -59,7 +56,6 @@ public class RegisterActivity extends AppCompatActivity {
         etTelefone = findViewById(R.id.etTelefone);
         etDocumento = findViewById(R.id.etDocumento);
 
-        // Inicializar RadioGroup
         rgTipoPessoa = findViewById(R.id.rgTipoPessoa);
         rbFisica = findViewById(R.id.rbFisica);
         rbJuridica = findViewById(R.id.rbJuridica);
@@ -75,7 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
         btnFinalizarCadastro = findViewById(R.id.btnFinalizarCadastro);
     }
 
-    // Lógica para buscar CEP automaticamente
     private void configurarBuscaCep() {
         etCep.addTextChangedListener(new TextWatcher() {
             @Override
@@ -83,7 +78,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Quando o usuário digitar 8 números
                 if (s.length() == 8) {
                     buscarEndereco(s.toString());
                 }
@@ -103,13 +97,11 @@ public class RegisterActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     ViaCepResponse endereco = response.body();
 
-                    // Preenche os campos automaticamente
                     etRua.setText(endereco.getLogradouro());
                     etBairro.setText(endereco.getBairro());
                     etCidade.setText(endereco.getLocalidade());
                     etEstado.setText(endereco.getUf());
 
-                    // Move o foco para o campo Número, para facilitar pro usuário
                     etNumero.requestFocus();
                 } else {
                     Toast.makeText(RegisterActivity.this, "CEP não encontrado.", Toast.LENGTH_SHORT).show();
@@ -133,8 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // 1. Pega o valor do RadioButton selecionado
-        String tipoPessoaSelecionada = "Fisica"; // Valor padrão
+        String tipoPessoaSelecionada = "Fisica";
         int selectedId = rgTipoPessoa.getCheckedRadioButtonId();
         if (selectedId == R.id.rbJuridica) {
             tipoPessoaSelecionada = "Juridica";
@@ -167,11 +158,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Cadastro OK! Entrando...", Toast.LENGTH_SHORT).show();
                     realizarLoginAutomatico(email, senha);
                 } else {
-                    // ====================================================
-                    // TRATAMENTO DE ERRO OBJETIVO
-                    // ====================================================
+
                     try {
-                        // 1. Pega o texto bruto do erro (JSON)
                         String erroBruto = response.errorBody().string();
 
                         org.json.JSONObject jsonObject = new org.json.JSONObject(erroBruto);
@@ -183,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
                         } else if (jsonObject.has("error")) {
                             mensagemAmigavel = jsonObject.getString("error");
                         } else {
-                            // Se não tiver mensagem específica, usa o JSON bruto ou o código
+
                             mensagemAmigavel = "Erro no servidor (" + response.code() + ")";
                         }
 

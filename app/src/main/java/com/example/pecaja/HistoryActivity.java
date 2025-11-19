@@ -13,7 +13,7 @@ import java.util.List;
 public class HistoryActivity extends AppCompatActivity {
 
     RecyclerView rvHistorico;
-    HistoryAdapter historyAdapter; // Você pode reutilizar o CartAdapter se quiser, ou manter o HistoryAdapter
+    HistoryAdapter historyAdapter;
     List<Produto> listaDeHistorico;
 
     @Override
@@ -25,12 +25,6 @@ public class HistoryActivity extends AppCompatActivity {
 
         // 1. PEGAR DADOS REAIS DO GERENCIADOR
         listaDeHistorico = HistoryManager.getInstance().getHistorico();
-
-        // 2. Configurar Adapter
-        // (Nota: O HistoryAdapter precisa ser capaz de exibir os dados do Produto igual o CartAdapter)
-        // Se o seu HistoryAdapter for muito simples, considere usar o CartAdapter aqui também,
-        // mas passando null no listener se não quiser botões de editar.
-        // Para simplificar, vou assumir que você vai atualizar o HistoryAdapter ou usar uma lógica similar.
 
         historyAdapter = new HistoryAdapter(listaDeHistorico);
 

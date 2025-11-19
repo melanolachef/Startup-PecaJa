@@ -20,8 +20,6 @@ public class HistoryManager {
     }
 
     public void adicionarCompra(List<Produto> produtosComprados) {
-        // Adiciona todos os itens do carrinho ao histórico
-        // Importante: Criamos uma cópia para não dar problema ao limpar o carrinho
         historicoDeCompras.addAll(new ArrayList<>(produtosComprados));
     }
 

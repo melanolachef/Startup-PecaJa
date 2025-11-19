@@ -1,12 +1,12 @@
 package com.example.pecaja;
 
 public class ViaCepResponse {
-    private String logradouro; // Rua
+    private String logradouro;
     private String bairro;
-    private String localidade; // Cidade
-    private String uf;         // Estado
+    private String localidade;
+    private String uf;
 
-    // Getters
+
     public String getLogradouro() { return logradouro; }
     public String getBairro() { return bairro; }
     public String getLocalidade() { return localidade; }

@@ -93,21 +93,26 @@ public class HomeActivity extends AppCompatActivity implements MessageAdapter.On
                     List<Produto> produtos = response.body().getResposta();
 
                     if (produtos != null && !produtos.isEmpty()) {
+
                         for (Produto p : produtos) {
                             addProductMessage(p);
                         }
                     } else {
-                        addMessage("Desculpe, não encontrei produtos para: " + textoMensagem, false);
+                        addMessage("Poxa, procurei aqui mas não encontrei nada sobre '" + textoMensagem + "'. 😕\n\nTente buscar por termos mais simples, como 'Freio', 'Óleo' ou o modelo da moto.", false);
                     }
                 } else {
-                    addMessage("Desculpe, tive um problema ao processar sua solicitação (Código: " + response.code() + ")", false);
+                    if (response.code() == 404) {
+                        addMessage("Não encontrei nenhum produto com essa descrição no nosso catálogo.", false);
+                    } else {
+                        addMessage("Opa, tive um soluço aqui nos meus sistemas. Tente perguntar novamente. (Erro " + response.code() + ")", false);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<ChatResponse> call, Throwable t) {
-                addMessage("Falha na conexão. Verifique sua internet.", false);
-                Log.e("ChatAPI", "Falha na API: " + t.getMessage());
+                addMessage("Parece que minha conexão caiu. Verifique seu Wi-Fi ou 4G e tente novamente.", false);
+                Log.e("ChatAPI", "Falha técnica: " + t.getMessage());
             }
         });
     }
@@ -126,13 +131,11 @@ public class HomeActivity extends AppCompatActivity implements MessageAdapter.On
 
     @Override
     public void onAddToCartClick(Produto produto) {
-        // Tenta adicionar
         boolean sucesso = CartManager.getInstance().adicionarProduto(produto);
 
         if (sucesso) {
             Toast.makeText(this, produto.getNome() + " adicionado!", Toast.LENGTH_SHORT).show();
         } else {
-            // Mensagem de erro se estourar o estoque
             Toast.makeText(this, "Estoque limite atingido para este item!", Toast.LENGTH_LONG).show();
         }
     }

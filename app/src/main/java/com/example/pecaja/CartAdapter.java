@@ -45,7 +45,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Produto produto = listaProdutos.get(position);
 
-        // Preenche os dados visuais
         holder.tvNomeProduto.setText(produto.getNome());
         holder.tvQuantidade.setText(String.valueOf(produto.getQuantidade()));
 
@@ -59,44 +58,36 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.ivProdutoCarrinho);
 
-        // --- LÓGICA DO BOTÃO MAIS ---
+
         holder.btnMais.setOnClickListener(v -> {
             if (produto.getQuantidade() < produto.getEstoqueMaximo()) {
                 produto.incrementarQuantidade();
                 notifyItemChanged(holder.getAdapterPosition());
                 listener.onCartUpdated();
             } else {
-                // Feedback visual ou Toast (precisaria passar contexto para Toast, mas aqui só bloquear já serve)
+
                Toast.makeText(context, "Máximo em estoque", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // --- LÓGICA DO BOTÃO MENOS (ATUALIZADA) ---
         holder.btnMenos.setOnClickListener(v -> {
             int currentPosition = holder.getAdapterPosition();
 
-            // Verificação de segurança
             if (currentPosition == RecyclerView.NO_POSITION) return;
 
             if (produto.getQuantidade() > 1) {
-                // Se tiver mais de 1, apenas diminui
+
                 produto.decrementarQuantidade();
                 notifyItemChanged(currentPosition);
             } else {
-                // SE FOR 1, REMOVE O ITEM
 
-                // 1. Remove do Singleton (Dados)
                 CartManager.getInstance().removerProduto(produto);
 
-                // 2. Remove visualmente da lista (Animação)
                 notifyItemRemoved(currentPosition);
 
-                // 3. Avisa o adapter que os itens abaixo subiram uma posição
-                // (Isso evita bugs de clicar no item errado depois de apagar um)
                 notifyItemRangeChanged(currentPosition, listaProdutos.size());
             }
 
-            // Atualiza o preço total na Activity
             listener.onCartUpdated();
         });
     }

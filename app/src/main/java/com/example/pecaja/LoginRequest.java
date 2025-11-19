@@ -6,7 +6,7 @@ public class LoginRequest {
 
     String username;
 
-    @SerializedName("password") // Assumindo que a API espera "password"
+    @SerializedName("password")
     String senha;
 
     public LoginRequest(String email, String senha) {
