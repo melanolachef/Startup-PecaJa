@@ -8,4 +8,7 @@ public interface AuthService {
 
     @POST("api/auth/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
+
+    @POST("api/usuario/create")
+    Call<Void> cadastrar(@Body RegisterRequest registerRequest);
 }
